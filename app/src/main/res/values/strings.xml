@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Mastermind</string>
+
+    <string-array name="rows_array">
+        <item>4</item>
+        <item>8</item>
+        <item>16</item>
+    </string-array>
+
+    <string-array name="cols_array">
+        <item>4</item>
+        <item>6</item>
+        <item>8</item>
+    </string-array>
+</resources>
