@@ -1,50 +1,46 @@
 package com.vangor.mastermind;
 
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.vangor.mastermind.game.consoleui.TextUI;
 import com.vangor.mastermind.game.core.Ball;
+import com.vangor.mastermind.game.core.BallColor;
+import com.vangor.mastermind.game.core.Field;
 import com.vangor.mastermind.game.core.GameState;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextUI textUI = new TextUI();
-    TextView game;
-    Button btnNewGame;
-    Button btnCommand;
-    Button btnCheck;
-    EditText txtCommand;
-    Spinner rowSpinner;
-    ArrayAdapter<CharSequence> rowAdapter;
-    Spinner columnSpinner;
-    ArrayAdapter<CharSequence> columnAdapter;
+    private Field field = new Field(10, 6, false);
+    private int rows = field.getRowCount();
+    private int cols = field.getColCount();
+    private ImageButton buttons[][] = new ImageButton[rows][cols];
 
-    private int rows = textUI.getField().getRowCount();
-    private int cols = textUI.getField().getColCount();
-    Button buttons[][] = new Button[rows][cols];
+    private Button btnNewGame;
+    private Button btnCheck;
+    private Spinner rowSpinner;
+    private ArrayAdapter<CharSequence> rowAdapter;
+    private Spinner columnSpinner;
+    private ArrayAdapter<CharSequence> columnAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        game = (TextView) findViewById(R.id.gameText);
+        Log.d("NewGame", "Rows: " + rows + " ,cols: " + cols + " currentRow: " + field.getCurrentRow());
+        Log.d("NewGame", "Field rows: " + field.getRowCount() + " ,field cols: " + field.getColCount() + " currentRow: " + field.getCurrentRow());
         btnNewGame = (Button) findViewById(R.id.buttonNewGame);
-        btnCommand = (Button) findViewById(R.id.buttonCommand);
-        txtCommand = (EditText) findViewById(R.id.textCommand);
         btnCheck = (Button) findViewById(R.id.buttonCheck);
 
         rowSpinner = (Spinner) findViewById(R.id.spinnerRow);
@@ -62,42 +58,101 @@ public class MainActivity extends AppCompatActivity {
         btnNewGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int rows = Integer.parseInt(rowSpinner.getSelectedItem().toString());
-                int cols = Integer.parseInt(columnSpinner.getSelectedItem().toString());
-                textUI.newField(rows, cols, false);
-                game.setText(String.valueOf(textUI.render()));
-            }
-        });
-
-        btnCommand.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String line = txtCommand.getText().toString();
-                Matcher matcher = Pattern.compile("([1-" + textUI.getField().getColCount() + "])([RGBYCDMW])").matcher(line);
-                if (matcher.matches()) {
-                    textUI.getField().setBall(matcher.group(1).charAt(0) - 48, textUI.signToBallColor(matcher.group(2).charAt(0)));
-                } else {
-                    Toast.makeText(getApplicationContext(), "Please enter command ([1-" + textUI.getField().getColCount() + "])([RGBYCDMW])", Toast.LENGTH_LONG).show();
-                }
-                game.setText(String.valueOf(textUI.render()));
+                rows = Integer.parseInt(rowSpinner.getSelectedItem().toString());
+                cols = Integer.parseInt(columnSpinner.getSelectedItem().toString());
+                field = new Field(rows++, cols, false);
+                Log.d("btnNewGame", "Rows: " + rows + " ,cols: " + cols + " currentRow: " + field.getCurrentRow());
+                Log.d("btnNewGame", "Field rows: " + field.getRowCount() + " ,field cols: " + field.getColCount() + " currentRow: " + field.getCurrentRow());
+                populateButtons();
             }
         });
 
         btnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (textUI.getField().getState() == GameState.PLAYING && textUI.getField().isRowFilled()) {
-                    textUI.getField().updateGameState();
-                    textUI.getField().generateClue();
-                    textUI.getField().nextRow();
-                    game.setText(String.valueOf(textUI.render()));
-                    Toast.makeText(getApplicationContext(), "You guessed " + textUI.clueToString(textUI.getField().getClue(), textUI.getField().getCurrentRow()+1), Toast.LENGTH_LONG).show();
-                } else if (textUI.getField().getState() == GameState.PLAYING) {
+                if (field.getState() == GameState.PLAYING && field.isRowFilled()) {
+                    field.updateGameState();
+                    field.generateClue();
+                    Toast.makeText(getApplicationContext(), field.clueToString(field.getClue(), field.getCurrentRow()), Toast.LENGTH_LONG).show();
+                    field.nextRow();
+                } else if (field.getState() == GameState.PLAYING) {
                     Toast.makeText(getApplicationContext(), "Row is not complete!", Toast.LENGTH_LONG).show();
-                } else if (textUI.getField().getState() == GameState.SOLVED) {
+                } else if (field.getState() == GameState.SOLVED) {
                     Toast.makeText(getApplicationContext(), "You won!", Toast.LENGTH_LONG).show();
                 }
             }
         });
+
+        populateButtons();
+    }
+
+    private void populateButtons() {
+        TableLayout table = (TableLayout) findViewById(R.id.tableForButtons);
+        table.removeAllViews();
+        for (int row = 0; row < rows; row++) {
+            TableRow tableRow = new TableRow(this);
+            //table.setBackgroundResource(R.color.colorAccent);
+            table.addView(tableRow);
+
+            String image = field.clueToImg(field.getClue(), row, true);
+            int picId = getResources().getIdentifier(image, "drawable", getApplicationContext().getPackageName());
+            ImageView clue = new ImageView(this);
+            clue.setImageResource(picId);
+            tableRow.addView(clue);
+
+            for (int col = 0; col < cols; col++) {
+                ImageButton button = new ImageButton(this);
+                tableRow.addView(button);
+                buttons[row][col] = button;
+
+                updateImage(row, col);
+
+                final int FINAL_ROW = row;
+                final int FINAL_COL = col;
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        gridButtonClicked(FINAL_ROW, FINAL_COL);
+                    }
+                });
+            }
+
+            image = field.clueToImg(field.getClue(), row, false);
+            picId = getResources().getIdentifier(image, "drawable", getApplicationContext().getPackageName());
+            clue = new ImageView(this);
+            clue.setImageResource(picId);
+            tableRow.addView(clue);
+        }
+    }
+
+    private void gridButtonClicked(int row, int col) {
+        ImageButton button = buttons[row][col];
+        if (field.getState() == GameState.PLAYING) {
+            try {
+                Ball ball = field.getTile(row, col);
+                BallColor nextColor = BallColor.getNext(ball);
+                field.setBall(col + 1, nextColor);
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
+        updateImage(row, col);
+    }
+
+    private void updateImage(int row, int col) {
+        ImageButton button = buttons[row][col];
+        Ball ball = field.getTile(row, col);
+        String image = (row == 0 && field.getState() == GameState.PLAYING) ? "unknown" :
+                (ball != null) ? ball.getColor().toString().toLowerCase() : "nothing";
+        int picId = getResources().getIdentifier(image, "drawable", getApplicationContext().getPackageName());
+        button.setBackgroundResource(picId);
+    }
+
+    private void render() {
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                updateImage(row, col);
+            }
+        }
     }
 }

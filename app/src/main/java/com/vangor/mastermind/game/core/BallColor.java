@@ -17,4 +17,9 @@ public enum BallColor {
     public static BallColor getNext(BallColor ballColor) {
         return (ballColor == null || ballColor.ordinal() == values().length - 1) ? values()[0] : values()[ballColor.ordinal() + 1];
     }
+
+    public static BallColor getNext(Ball ball) {
+        return (ball == null || ball.getColor().ordinal() == values().length - 1) ? values()[0] : values()[ball.getColor().ordinal() + 1];
+    }
 }
+

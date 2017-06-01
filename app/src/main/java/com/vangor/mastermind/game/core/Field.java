@@ -162,4 +162,29 @@ public class Field {
         }
         return 0;
     }
+
+    public String clueToString(ClueType[][] clue, int row) {
+        int places = 0;
+        int colors = 0;
+        for (int col = 0; col < getColCount(); col++) {
+            places = clue[row][col] == ClueType.PLACE ? places + 1 : places;
+            colors = clue[row][col] == ClueType.COLOR ? colors + 1 : colors;
+        }
+        return "You guessed " + places + " place/s and " + colors + " color/s right!";
+    }
+
+    public String clueToImg(ClueType[][] clue, int row, boolean first) {
+        int places = 0;
+        int colors = 0;
+        for (int col = 0; col < getColCount(); col++) {
+            places = clue[row][col] == ClueType.PLACE ? places + 1 : places;
+            colors = clue[row][col] == ClueType.COLOR ? colors + 1 : colors;
+        }
+
+        if (row > getCurrentRow()) {
+            return (first) ? String.format("places_%s", places) : String.format("faces_%s", colors);
+        } else {
+            return "blank";
+        }
+    }
 }
