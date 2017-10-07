@@ -1,7 +1,10 @@
 package com.vangor.mastermind;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -38,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d("NewGame", "Rows: " + rows + " ,cols: " + cols + " currentRow: " + field.getCurrentRow());
-        Log.d("NewGame", "Field rows: " + field.getRowCount() + " ,field cols: " + field.getColCount() + " currentRow: " + field.getCurrentRow());
+        logging();
+
         btnNewGame = (Button) findViewById(R.id.buttonNewGame);
         btnCheck = (Button) findViewById(R.id.buttonCheck);
 
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 tableRow.addView(button);
                 buttons[row][col] = button;
 
-                //Store button reference into an array
+                //On button click function
                 final int FINAL_ROW = row;
                 final int FINAL_COL = col;
                 button.setOnClickListener(new View.OnClickListener() {
@@ -156,5 +159,17 @@ public class MainActivity extends AppCompatActivity {
                 button.setBackgroundResource(picId);
             }
         }
+    }
+
+    private void logging() {
+        DisplayMetrics display = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(display);
+        int screenWidth = display.widthPixels;
+        int screenHeight = display.heightPixels;
+        int rows = screenHeight;
+        int cols = screenWidth;
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int densityDpi = (int)(metrics.density * 160f);
+        Log.d("screenSize", "Height: " + screenHeight + " ,width: " + screenWidth + " " + rows + " " + cols + " " + densityDpi);
     }
 }
