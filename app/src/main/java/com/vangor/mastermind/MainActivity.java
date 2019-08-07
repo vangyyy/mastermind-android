@@ -22,7 +22,8 @@ import com.vangor.mastermind.game.core.GameState;
 
 public class MainActivity extends AppCompatActivity {
 
-	private Field field = new Field(8, 4, false);
+	// TODO: Fix, game crashes if not initialized with max sized field
+	private Field field = new Field(10, 6, false);
 	private int rows = field.getRowCount();
 	private int cols = field.getColCount();
 	private ImageButton[][] buttons = new ImageButton[rows][cols];
