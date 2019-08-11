@@ -2,17 +2,8 @@
     <string name="app_name">Mastermind</string>
     <string name="new_game">New Game</string>
     <string name="check">Check</string>
-
-    <string-array name="rows_array">
-        <item>4</item>
-        <item>6</item>
-        <item>8</item>
-        <item>10</item>
-    </string-array>
-
-    <string-array name="cols_array">
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-    </string-array>
+    <string name="rows">Rows: %d</string>
+    <string name="columns">Columns: %d</string>
+    <string name="cancel">Cancel</string>
+    <string name="start">Start</string>
 </resources>

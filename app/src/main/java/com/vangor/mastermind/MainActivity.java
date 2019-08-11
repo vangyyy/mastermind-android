@@ -4,23 +4,21 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.vangor.mastermind.game.core.Ball;
-import com.vangor.mastermind.game.core.BallColor;
-import com.vangor.mastermind.game.core.Field;
-import com.vangor.mastermind.game.core.GameState;
+import game.core.Ball;
+import game.core.BallColor;
+import game.core.Field;
+import game.core.GameState;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NewGameListener {
 
 	// TODO: Fix, game crashes if not initialized with max sized field
 	private Field field = new Field(10, 6, false);
@@ -28,44 +26,21 @@ public class MainActivity extends AppCompatActivity {
 	private int cols = field.getColCount();
 	private ImageButton[][] buttons = new ImageButton[rows][cols];
 
-	private Button btnNewGame;
-	private Button btnCheck;
-	private Spinner rowSpinner;
-	private ArrayAdapter<CharSequence> rowAdapter;
-	private Spinner columnSpinner;
-	private ArrayAdapter<CharSequence> columnAdapter;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		logging();
+		logScreenSize();
 
-		btnNewGame = findViewById(R.id.buttonNewGame);
-		btnCheck = findViewById(R.id.buttonCheck);
-
-		rowSpinner = findViewById(R.id.spinnerRow);
-		rowAdapter = ArrayAdapter.createFromResource(this,
-				R.array.rows_array, android.R.layout.simple_spinner_item);
-		rowAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		rowSpinner.setAdapter(rowAdapter);
-
-		columnSpinner = findViewById(R.id.spinnerColumn);
-		columnAdapter = ArrayAdapter.createFromResource(this,
-				R.array.cols_array, android.R.layout.simple_spinner_item);
-		columnAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		columnSpinner.setAdapter(columnAdapter);
+		Button btnNewGame = findViewById(R.id.buttonNewGame);
+		Button btnCheck = findViewById(R.id.buttonCheck);
 
 		btnNewGame.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				rows = Integer.parseInt(rowSpinner.getSelectedItem().toString());
-				cols = Integer.parseInt(columnSpinner.getSelectedItem().toString());
-				field = new Field(rows++, cols, false);
-				Log.d("btnNewGame", "Rows: " + rows + " ,cols: " + cols + " currentRow: " + field.getCurrentRow());
-				Log.d("btnNewGame", "Field rows: " + field.getRowCount() + " ,field cols: " + field.getColCount() + " currentRow: " + field.getCurrentRow());
-				populateButtons();
+				NewGameDialog newGameDialog = new NewGameDialog();
+				newGameDialog.show(getSupportFragmentManager(), "dialogTAG");
 			}
 		});
 
@@ -92,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void populateButtons() {
-		TableLayout table = findViewById(R.id.tableForButtons);
+		TableLayout table = findViewById(R.id.gameTable);
 		table.removeAllViews();
 		for (int row = 0; row < rows; row++) {
 			//Create new tableRow
@@ -160,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
-	private void logging() {
+	private void logScreenSize() {
 		DisplayMetrics display = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(display);
 		int screenWidth = display.widthPixels;
@@ -168,5 +143,14 @@ public class MainActivity extends AppCompatActivity {
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
 		int densityDpi = (int) (metrics.density * 160f);
 		Log.d("screenSize", "Height: " + screenHeight + " ,width: " + screenWidth + " " + screenHeight + " " + screenWidth + " " + densityDpi);
+	}
+
+	@Override
+	public void newGame(int rows, int columns) {
+		this.rows = rows;
+		this.cols = columns;
+		field = new Field(this.rows++, this.cols, false);
+		Log.d("=======================", "Rows: " + rows + " ,cols: " + columns + " currentRow: " + field.getCurrentRow());
+		populateButtons();
 	}
 }

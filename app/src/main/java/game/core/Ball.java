@@ -1,4 +1,4 @@
-package com.vangor.mastermind.game.core;
+package game.core;
 
 public class Ball {
 
