@@ -3,4 +3,12 @@
     <color name="colorPrimary">#834AEA</color>
     <color name="colorPrimaryDark">#542EAB</color>
     <color name="colorAccent">#FE4080</color>
+
+    <!--Basic colors-->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!--Tile colors-->
+    <color name="freeTileColor">#414345</color>
+    <color name="hiddenTileColor">@color/black</color>
 </resources>

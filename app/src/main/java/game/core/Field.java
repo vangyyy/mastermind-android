@@ -1,5 +1,7 @@
 package game.core;
 
+import java.util.HashMap;
+
 public class Field {
 
 	private final int rowCount;
@@ -186,5 +188,20 @@ public class Field {
 		} else {
 			return "blank";
 		}
+	}
+
+	public HashMap getClueHashMap(ClueType[][] clue, int row) {
+		int colors = 0;
+		int places = 0;
+		for (int col = 0; col < getColCount(); col++) {
+			colors = clue[row][col] == ClueType.COLOR ? colors + 1 : colors;
+			places = clue[row][col] == ClueType.PLACE ? places + 1 : places;
+		}
+
+		HashMap<String, Integer> clues = new HashMap<>();
+		clues.put("colors", colors);
+		clues.put("places", places);
+
+		return clues;
 	}
 }

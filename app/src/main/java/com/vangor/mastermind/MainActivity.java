@@ -1,35 +1,46 @@
 package com.vangor.mastermind;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.HashMap;
+
 import game.core.Ball;
 import game.core.BallColor;
 import game.core.Field;
 import game.core.GameState;
 
-public class MainActivity extends AppCompatActivity implements NewGameListener {
+import static android.graphics.drawable.GradientDrawable.Orientation.BOTTOM_TOP;
+import static android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT;
 
+public class MainActivity extends AppCompatActivity implements NewGameListener {
+	private final int TILE_SIZE = 120;
+	private final int TILE_MARGIN = 5;
+
+	private Context context;
 	// TODO: Fix, game crashes if not initialized with max sized field
 	private Field field = new Field(10, 6, false);
 	private int rows = field.getRowCount();
 	private int cols = field.getColCount();
-	private ImageButton[][] buttons = new ImageButton[rows][cols];
+	private Button[][] buttons = new Button[rows][cols];
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		context = getApplicationContext();
 
 		logScreenSize();
 
@@ -47,17 +58,23 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 		btnCheck.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if (field.getState() == GameState.PLAYING && field.isRowFilled()) {
-					field.updateGameState();
-					field.generateClue();
-					Toast.makeText(getApplicationContext(), field.clueToString(field.getClue(), field.getCurrentRow()), Toast.LENGTH_SHORT).show();
-					field.nextRow();
-				} else if (field.getState() == GameState.PLAYING) {
-					Toast.makeText(getApplicationContext(), "Row is not complete!", Toast.LENGTH_SHORT).show();
-				} else if (field.getState() == GameState.SOLVED) {
-					Toast.makeText(getApplicationContext(), "You WON!", Toast.LENGTH_SHORT).show();
-				} else if (field.getState() == GameState.FAILED) {
-					Toast.makeText(getApplicationContext(), "You LOST!", Toast.LENGTH_SHORT).show();
+				switch (field.getState()) {
+					case PLAYING:
+						if (field.isRowFilled()) {
+							field.updateGameState();
+							field.generateClue();
+							Toast.makeText(context, field.clueToString(field.getClue(), field.getCurrentRow()), Toast.LENGTH_SHORT).show();
+							field.nextRow();
+						} else {
+							Toast.makeText(context, "Row is not complete!", Toast.LENGTH_SHORT).show();
+						}
+						break;
+					case SOLVED:
+						Toast.makeText(context, "You WON!", Toast.LENGTH_SHORT).show();
+						break;
+					case FAILED:
+						Toast.makeText(context, "You LOST!", Toast.LENGTH_SHORT).show();
+						break;
 				}
 				populateButtons();
 			}
@@ -70,68 +87,150 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 		TableLayout table = findViewById(R.id.gameTable);
 		table.removeAllViews();
 		for (int row = 0; row < rows; row++) {
-			//Create new tableRow
-			TableRow tableRow = new TableRow(this);
-			//table.setBackgroundResource(R.color.colorAccent);
+			TableRow tableRow = new TableRow(context);
 			table.addView(tableRow);
 
-			//Insert faces clue
-			String image = field.clueToImg(field.getClue(), row, true);
-			int picId = getResources().getIdentifier(image, "drawable", getApplicationContext().getPackageName());
-			ImageView clue = new ImageView(this);
-			clue.setImageResource(picId);
-			tableRow.addView(clue);
+			HashMap clueMap = field.getClueHashMap(field.getClue(), row);
+
+			// Create place clue button
+			Button placesClueButton = new Button(context);
+			tableRow.addView(placesClueButton);
+			placesClueButton.setText(
+					getResources().getString(R.string.places_clue_format, clueMap.get("places"))
+			);
 
 			for (int col = 0; col < cols; col++) {
-				ImageButton button = new ImageButton(this);
+				Button button = new Button(context);
 				tableRow.addView(button);
 				buttons[row][col] = button;
 
-				//On button click function
-				final int FINAL_ROW = row;
-				final int FINAL_COL = col;
-				button.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						gridButtonClicked(FINAL_ROW, FINAL_COL);
-					}
-				});
+				// On button click function
+				final int BUTTON_ROW_POSITION = row;
+				final int BUTTON_COL_POSITION = col;
+				if (field.getCurrentRow() == row) {
+					button.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							gridButtonClicked(BUTTON_ROW_POSITION, BUTTON_COL_POSITION);
+						}
+					});
+				}
 			}
 
-			//Insert places clue
-			image = field.clueToImg(field.getClue(), row, false);
-			picId = getResources().getIdentifier(image, "drawable", getApplicationContext().getPackageName());
-			clue = new ImageView(this);
-			clue.setImageResource(picId);
-			tableRow.addView(clue);
+			// Create color clue button
+			Button colorsClueButton = new Button(context);
+			tableRow.addView(colorsClueButton);
+			colorsClueButton.setText(
+					getResources().getString(R.string.colors_clue_format, clueMap.get("colors"))
+			);
+
+
+			if (row <= field.getCurrentRow()) {
+				placesClueButton.setVisibility(View.INVISIBLE);
+				colorsClueButton.setVisibility(View.INVISIBLE);
+			}
+
+			int[] gradientColors = {
+					getResources().getColor(R.color.colorPrimary),
+					getResources().getColor(R.color.colorPrimaryDark)
+			};
+
+			// Styling
+			GradientDrawable gradient = new GradientDrawable(LEFT_RIGHT, gradientColors);
+			gradient.setCornerRadius(999f);
+
+			placesClueButton.setBackground(gradient);
+			colorsClueButton.setBackground(gradient);
+
+			ViewGroup.LayoutParams params = colorsClueButton.getLayoutParams();
+			params.width = TILE_SIZE;
+			params.height = TILE_SIZE;
+			placesClueButton.setLayoutParams(params);
+			colorsClueButton.setLayoutParams(params);
+
+			placesClueButton.setElevation(3f);
+			colorsClueButton.setElevation(3f);
+
+			placesClueButton.setTextColor(getResources().getColor(R.color.white));
+			colorsClueButton.setTextColor(getResources().getColor(R.color.white));
+
+			setMargins(placesClueButton, TILE_MARGIN, 0, TILE_MARGIN, TILE_MARGIN);
+			setMargins(colorsClueButton, TILE_MARGIN, 0, TILE_MARGIN, TILE_MARGIN);
 		}
-		renderImageButtons();
+		renderButtons();
 	}
 
 	private void gridButtonClicked(int row, int col) {
-		ImageButton button = buttons[row][col];
+		Button button = buttons[row][col];
 		if (field.getState() == GameState.PLAYING) {
 			try {
 				Ball ball = field.getTile(row, col);
 				BallColor nextColor = BallColor.getNext(ball);
 				field.setBall(col + 1, nextColor);
 			} catch (Exception e) {
-				Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
 			}
 		}
 		populateButtons();
 	}
 
-	private void renderImageButtons() {
+	private void renderButtons() {
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < cols; col++) {
-				ImageButton button = buttons[row][col];
+
+				Button button = buttons[row][col];
 				Ball ball = field.getTile(row, col);
-				String image = (row == 0 && field.getState() == GameState.PLAYING) ? "unknown" :
-						(ball != null) ? ball.getColor().toString().toLowerCase() : "nothing";
-				int picId = getResources().getIdentifier(image, "drawable", getApplicationContext().getPackageName());
-				button.setBackgroundResource(picId);
+
+				// Free tile colors
+				int ballColorLight = getResources().getColor(R.color.freeTileColor);
+				int ballColorDark = getResources().getColor(R.color.freeTileColor);
+
+				if (row == 0) {
+					if (field.getState() == GameState.PLAYING) {
+						// Hidden tile colors
+						ballColorLight = getResources().getColor(R.color.hiddenTileColor);
+						ballColorDark = getResources().getColor(R.color.hiddenTileColor);
+						button.setTextColor(getResources().getColor(R.color.white));
+						button.setText("?");
+					} else {
+						// Hidden tile colors
+						ballColorLight = Color.parseColor(ball.getColor().getColorLight());
+						ballColorDark = Color.parseColor(ball.getColor().getColorDark());
+						button.setTextColor(getResources().getColor(R.color.white));
+						button.setText("?");
+					}
+				} else if (ball != null) {
+					// Filled tile colors
+					ballColorLight = Color.parseColor(ball.getColor().getColorLight());
+					ballColorDark = Color.parseColor(ball.getColor().getColorDark());
+				}
+
+				int[] gradientColors = {
+						ballColorLight,
+						ballColorDark
+				};
+
+				GradientDrawable gradient = new GradientDrawable(BOTTOM_TOP, gradientColors);
+				gradient.setCornerRadius(999f);
+				button.setBackground(gradient);
+
+				ViewGroup.LayoutParams params = button.getLayoutParams();
+				params.width = TILE_SIZE;
+				params.height = TILE_SIZE;
+				button.setLayoutParams(params);
+
+				button.setElevation(3f);
+
+				setMargins(button, TILE_MARGIN, 0, TILE_MARGIN, TILE_MARGIN);
 			}
+		}
+	}
+
+	private void setMargins(View view, int left, int top, int right, int bottom) {
+		if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+			ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+			p.setMargins(left, top, right, bottom);
+			view.requestLayout();
 		}
 	}
 
@@ -142,7 +241,8 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 		int screenHeight = display.heightPixels;
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
 		int densityDpi = (int) (metrics.density * 160f);
-		Log.d("screenSize", "Height: " + screenHeight + " ,width: " + screenWidth + " " + screenHeight + " " + screenWidth + " " + densityDpi);
+		Log.d("=== Screen size: ",
+				"height: " + screenHeight + ", width: " + screenWidth + ", density(DPI): " + densityDpi);
 	}
 
 	@Override
@@ -150,7 +250,8 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 		this.rows = rows;
 		this.cols = columns;
 		field = new Field(this.rows++, this.cols, false);
-		Log.d("=======================", "Rows: " + rows + " ,cols: " + columns + " currentRow: " + field.getCurrentRow());
+		Log.d("==== New game: ",
+				"Rows: " + rows + " ,cols: " + columns + " currentRow: " + field.getCurrentRow());
 		populateButtons();
 	}
 }

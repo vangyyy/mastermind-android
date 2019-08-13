@@ -6,4 +6,9 @@
     <string name="columns">Columns: %d</string>
     <string name="cancel">Cancel</string>
     <string name="start">Start</string>
+
+    <string name="places">Places</string>
+    <string name="colors">Colors</string>
+    <string name="places_clue_format">%sP</string>
+    <string name="colors_clue_format">%sC</string>
 </resources>
