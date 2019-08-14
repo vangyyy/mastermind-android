@@ -66,14 +66,14 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 							Toast.makeText(context, field.clueToString(field.getClue(), field.getCurrentRow()), Toast.LENGTH_SHORT).show();
 							field.nextRow();
 						} else {
-							Toast.makeText(context, "Row is not complete!", Toast.LENGTH_SHORT).show();
+							Toast.makeText(context, R.string.incomplete_row, Toast.LENGTH_SHORT).show();
 						}
 						break;
 					case SOLVED:
-						Toast.makeText(context, "You WON!", Toast.LENGTH_SHORT).show();
+						Toast.makeText(context, R.string.win_msg, Toast.LENGTH_SHORT).show();
 						break;
 					case FAILED:
-						Toast.makeText(context, "You LOST!", Toast.LENGTH_SHORT).show();
+						Toast.makeText(context, R.string.lost_msg, Toast.LENGTH_SHORT).show();
 						break;
 				}
 				populateButtons();

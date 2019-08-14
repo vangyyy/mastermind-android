@@ -11,4 +11,8 @@
     <string name="colors">Colors</string>
     <string name="places_clue_format">%sP</string>
     <string name="colors_clue_format">%sC</string>
+
+    <string name="incomplete_row">Row is not complete!</string>
+    <string name="win_msg">You WON!</string>
+    <string name="lost_msg">You LOST!</string>
 </resources>
