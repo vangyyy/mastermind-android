@@ -1,14 +1,14 @@
 package game.core;
 
 public enum BallColor {
-	CITRUS_PEEL     ("#FDC830", "#F37335"),
-	SIN_CITY_RED    ("#ED213A", "#93291E"),
-	BLUE_RASPBERRY  ("#56CCF2", "#2F80ED"),
-	BLACK_ROSE      ("#f4c4f3", "#fc67fa"),
-	FROST           ("#004e92", "#000428"),
-	LUSH            ("#a8e063", "#56ab2f"),
-	TERMINUS        ("#0f9b0f", "#0f3800"), // Change
-	BIGHEAD         ("#c94b4b", "#4b134f");
+	CITRUS_PEEL         ("#FDC830", "#F37335"),
+	SIN_CITY_RED        ("#ED213A", "#93291E"),
+	BLUE_RASPBERRY      ("#56CCF2", "#2F80ED"),
+	NEUROMANCER         ("#F953C6", "#B91D73"),
+	CLEAR_SKY           ("#005C97", "#363795"),
+	LUSH                ("#A8E063", "#56AB2f"),
+	VIOLET_INFLUENZA    ("#5A175E", "#380038"),
+	CARAMEL             ("#825421", "#69140E");
 
 	private String colorLight;
 	private String colorDark;
