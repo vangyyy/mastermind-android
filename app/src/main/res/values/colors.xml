@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Theme color palette-->
     <color name="colorPrimary">#834AEA</color>
     <color name="colorPrimaryDark">#542EAB</color>
     <color name="colorAccent">#FE4080</color>
@@ -11,4 +12,8 @@
     <!--Tile colors-->
     <color name="freeTileColor">#414345</color>
     <color name="hiddenTileColor">@color/black</color>
+
+    <!--Text colors-->
+    <color name="hiddenTileTextColor">@color/white</color>
+    <color name="clueTileTextColor">@color/white</color>
 </resources>

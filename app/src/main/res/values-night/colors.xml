@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Tile colors-->
+    <color name="hiddenTileColor">@color/white</color>
+
+    <!--Text colors-->
+    <color name="hiddenTileTextColor">@color/black</color>
+</resources>
+

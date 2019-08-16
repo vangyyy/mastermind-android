@@ -151,8 +151,8 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 			placesClueButton.setElevation(3f);
 			colorsClueButton.setElevation(3f);
 
-			placesClueButton.setTextColor(getResources().getColor(R.color.white));
-			colorsClueButton.setTextColor(getResources().getColor(R.color.white));
+			placesClueButton.setTextColor(getResources().getColor(R.color.clueTileTextColor));
+			colorsClueButton.setTextColor(getResources().getColor(R.color.clueTileTextColor));
 
 			setMargins(placesClueButton, TILE_MARGIN, 0, TILE_MARGIN, TILE_MARGIN);
 			setMargins(colorsClueButton, TILE_MARGIN, 0, TILE_MARGIN, TILE_MARGIN);
@@ -190,13 +190,13 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 						// Hidden tile colors
 						ballColorLight = getResources().getColor(R.color.hiddenTileColor);
 						ballColorDark = getResources().getColor(R.color.hiddenTileColor);
-						button.setTextColor(getResources().getColor(R.color.white));
+						button.setTextColor(getResources().getColor(R.color.hiddenTileTextColor));
 						button.setText("?");
 					} else {
 						// Hidden tile colors
 						ballColorLight = Color.parseColor(ball.getColor().getColorLight());
 						ballColorDark = Color.parseColor(ball.getColor().getColorDark());
-						button.setTextColor(getResources().getColor(R.color.white));
+						button.setTextColor(getResources().getColor(R.color.hiddenTileTextColor));
 						button.setText("?");
 					}
 				} else if (ball != null) {
