@@ -63,7 +63,10 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 						if (field.isRowFilled()) {
 							field.updateGameState();
 							field.generateClue();
-							Toast.makeText(context, field.clueToString(field.getClue(), field.getCurrentRow()), Toast.LENGTH_SHORT).show();
+							HashMap clueMap = field.getClueHashMap(field.getClue(), field.getCurrentRow());
+							Toast.makeText(context, "Guessed:\n" +
+									clueMap.get("places") + " place/s\n" +
+									clueMap.get("colors") + " color/s", Toast.LENGTH_SHORT).show();
 							field.nextRow();
 						} else {
 							Toast.makeText(context, R.string.incomplete_row, Toast.LENGTH_SHORT).show();
@@ -164,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 		Button button = buttons[row][col];
 		if (field.getState() == GameState.PLAYING) {
 			try {
-				Ball ball = field.getTile(row, col);
+				Ball ball = field.getBall(row, col);
 				BallColor nextColor = BallColor.getNext(ball);
 				field.setBall(col + 1, nextColor);
 			} catch (Exception e) {
@@ -179,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 			for (int col = 0; col < cols; col++) {
 
 				Button button = buttons[row][col];
-				Ball ball = field.getTile(row, col);
+				Ball ball = field.getBall(row, col);
 
 				// Free tile colors
 				int ballColorLight = getResources().getColor(R.color.freeTileColor);

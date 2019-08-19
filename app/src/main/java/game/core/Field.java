@@ -7,7 +7,7 @@ public class Field {
 	private final int rowCount;
 	private final int colCount;
 	private int currentRow;
-	private Ball[][] tiles;
+	private Ball[][] balls;
 	private ClueType[][] clue;
 	private GameState state = GameState.PLAYING;
 	private boolean duplicates;
@@ -17,17 +17,22 @@ public class Field {
 		if (colCount > BallColor.values().length) {
 			throw new IllegalArgumentException("Maximum of " + BallColor.values().length + " columns is allowed!");
 		}
+
 		this.rowCount = rowCount + 1;
 		this.colCount = colCount;
+
 		this.currentRow = rowCount;
 		this.duplicates = duplicates;
-		tiles = new Ball[this.rowCount][this.colCount];
+
+		balls = new Ball[this.rowCount][this.colCount];
 		clue = new ClueType[this.rowCount][this.colCount];
+
 		if (duplicates) {
 			generateRandomRow();
 		} else {
 			generateUniqueRow();
 		}
+
 		startTime = System.currentTimeMillis();
 	}
 
@@ -36,7 +41,7 @@ public class Field {
 	 */
 	private void generateRandomRow() {
 		for (int col = 0; col < colCount; col++) {
-			tiles[0][col] = new Ball(BallColor.getRandom());
+			balls[0][col] = new Ball(BallColor.getRandom());
 		}
 	}
 
@@ -44,10 +49,10 @@ public class Field {
 	 * Generates sequence of balls with unique colors on 0. row of playing field
 	 */
 	private void generateUniqueRow() {
-		tiles[0][0] = new Ball(BallColor.getRandom());
+		balls[0][0] = new Ball(BallColor.getRandom());
 		for (int col = 1; col < colCount; col++) {
 			do {
-				tiles[0][col] = new Ball(BallColor.getRandom());
+				balls[0][col] = new Ball(BallColor.getRandom());
 			} while (!checkForUniqueColors(col));
 		}
 	}
@@ -58,7 +63,7 @@ public class Field {
 	 */
 	private boolean checkForUniqueColors(int col) {
 		for (int i = 0; i < col; i++) {
-			if (tiles[0][col].getColor() == tiles[0][i].getColor()) {
+			if (balls[0][col].getColor() == balls[0][i].getColor()) {
 				return false;
 			}
 		}
@@ -71,7 +76,7 @@ public class Field {
 	public void updateGameState() {
 		state = GameState.SOLVED;
 		for (int col = 0; col < getColCount(); col++) {
-			if (tiles[0][col].getColor() != tiles[currentRow][col].getColor()) {
+			if (balls[0][col].getColor() != balls[currentRow][col].getColor()) {
 				state = currentRow - 1 > 0 ? GameState.PLAYING : GameState.FAILED;
 				break;
 			}
@@ -85,7 +90,7 @@ public class Field {
 		int cluePosition = 0;
 		for (int secretCol = 0; secretCol < getColCount(); secretCol++) {
 			for (int guessCol = 0; guessCol < getColCount(); guessCol++) {
-				if (tiles[0][secretCol].getColor() == tiles[currentRow][guessCol].getColor()) {
+				if (balls[0][secretCol].getColor() == balls[currentRow][guessCol].getColor()) {
 					clue[currentRow][cluePosition++] = ClueType.COLOR;
 					break;
 				}
@@ -93,7 +98,7 @@ public class Field {
 		}
 		cluePosition = 0;
 		for (int col = 0; col < getColCount(); col++) {
-			if (tiles[0][col].getColor() == tiles[currentRow][col].getColor()) {
+			if (balls[0][col].getColor() == balls[currentRow][col].getColor()) {
 				clue[currentRow][cluePosition++] = ClueType.PLACE;
 			}
 		}
@@ -105,7 +110,7 @@ public class Field {
 
 	public boolean isRowFilled() {
 		for (int col = 0; col < getColCount(); col++) {
-			if (tiles[currentRow][col] == null) {
+			if (balls[currentRow][col] == null) {
 				return false;
 			}
 		}
@@ -113,11 +118,11 @@ public class Field {
 	}
 
 	public void setBall(int colCount, BallColor color) {
-		tiles[currentRow][colCount - 1] = new Ball(color);
+		balls[currentRow][colCount - 1] = new Ball(color);
 	}
 
-	public Ball getTile(int row, int col) {
-		return tiles[row][col];
+	public Ball getBall(int row, int col) {
+		return balls[row][col];
 	}
 
 	public int getRowCount() {
@@ -143,7 +148,7 @@ public class Field {
 	public void restart() {
 		state = GameState.PLAYING;
 		currentRow = rowCount - 1;
-		tiles = new Ball[rowCount][colCount];
+		balls = new Ball[rowCount][colCount];
 		clue = new ClueType[rowCount][colCount];
 		if (duplicates) {
 			generateRandomRow();
@@ -163,31 +168,6 @@ public class Field {
 			return (colCount * 100) - elapsedTime + (int) ((float) currentRow / (rowCount - 1) * 100 * 5);
 		}
 		return 0;
-	}
-
-	public String clueToString(ClueType[][] clue, int row) {
-		int places = 0;
-		int colors = 0;
-		for (int col = 0; col < getColCount(); col++) {
-			places = clue[row][col] == ClueType.PLACE ? places + 1 : places;
-			colors = clue[row][col] == ClueType.COLOR ? colors + 1 : colors;
-		}
-		return "You guessed " + places + " place/s and " + colors + " color/s right!";
-	}
-
-	public String clueToImg(ClueType[][] clue, int row, boolean first) {
-		int places = 0;
-		int colors = 0;
-		for (int col = 0; col < getColCount(); col++) {
-			places = clue[row][col] == ClueType.PLACE ? places + 1 : places;
-			colors = clue[row][col] == ClueType.COLOR ? colors + 1 : colors;
-		}
-
-		if (row > getCurrentRow()) {
-			return (first) ? String.format("places_%s", places) : String.format("faces_%s", colors);
-		} else {
-			return "blank";
-		}
 	}
 
 	public HashMap getClueHashMap(ClueType[][] clue, int row) {
