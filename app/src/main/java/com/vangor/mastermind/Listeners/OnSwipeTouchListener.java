@@ -1,4 +1,4 @@
-package com.vangor.mastermind;
+package com.vangor.mastermind.Listeners;
 
 import android.content.Context;
 import android.view.GestureDetector;

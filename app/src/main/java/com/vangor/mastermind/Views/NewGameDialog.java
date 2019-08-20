@@ -1,4 +1,4 @@
-package com.vangor.mastermind;
+package com.vangor.mastermind.Views;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,6 +11,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatDialogFragment;
+
+import com.vangor.mastermind.Listeners.NewGameListener;
+import com.vangor.mastermind.R;
 
 public class NewGameDialog extends AppCompatDialogFragment {
 
@@ -33,11 +36,11 @@ public class NewGameDialog extends AppCompatDialogFragment {
 		textViewRows = view.findViewById(R.id.textViewRows);
 		textViewCols = view.findViewById(R.id.textViewCols);
 
-		//TODO: Change to actual value not fixed size
+		//TODO: Retain value instead of fixed size
 		String rowsString = getResources().getString(R.string.rows, 8);
 		textViewRows.setText(rowsString);
 
-		//TODO: Change to actual value not fixed size
+		//TODO: Retain value instead of fixed size
 		String colsString = getResources().getString(R.string.columns, 4);
 		textViewCols.setText(colsString);
 

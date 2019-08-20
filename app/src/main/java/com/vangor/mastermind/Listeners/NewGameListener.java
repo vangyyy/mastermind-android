@@ -1,4 +1,4 @@
-package com.vangor.mastermind;
+package com.vangor.mastermind.Listeners;
 
 public interface NewGameListener {
 	void newGame(int rows, int columns);

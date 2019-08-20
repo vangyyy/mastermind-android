@@ -1,10 +1,12 @@
-package com.vangor.mastermind;
+package com.vangor.mastermind.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.vangor.mastermind.R;
 
 public class SplashActivity extends AppCompatActivity {
 
