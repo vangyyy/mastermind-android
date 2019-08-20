@@ -2,6 +2,7 @@ package com.vangor.mastermind.Activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.vangor.mastermind.Listeners.NewGameListener;
@@ -172,5 +174,20 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 		this.columns = columns;
 		field = new Field(this.rows++, this.columns, false);
 		populateField();
+	}
+
+	@Override
+	public void onBackPressed() {
+		new AlertDialog.Builder(this)
+				.setTitle(R.string.exit_prompt_title)
+				.setMessage(getString(R.string.exit_prompt_message))
+				.setNegativeButton(R.string.no, null)
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				})
+				.show();
 	}
 }

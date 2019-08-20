@@ -15,4 +15,8 @@
     <string name="incomplete_row">Riadok nie je kompletný!</string>
     <string name="win_msg">Vyhral si!</string>
     <string name="lost_msg">Prehral si!</string>
+    <string name="exit_prompt_message">Naozaj chcete chcete zatvoriť aplikáciu?</string>
+    <string name="yes">Áno</string>
+    <string name="no">Nie</string>
+    <string name="exit_prompt_title">Potvrdiť ukončenie</string>
 </resources>

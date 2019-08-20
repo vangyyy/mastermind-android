@@ -15,4 +15,10 @@
     <string name="incomplete_row">Row is not complete!</string>
     <string name="win_msg">You WON!</string>
     <string name="lost_msg">You LOST!</string>
+
+    <string name="exit_prompt_title">Confirm exit</string>
+    <string name="exit_prompt_message">Do you really want to exit?</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
