@@ -10,10 +10,9 @@
     <color name="black">#000000</color>
 
     <!--Tile colors-->
-    <color name="freeTileColor">#414345</color>
-    <color name="hiddenTileColor">@color/black</color>
+    <color name="freeTileColor">#4D4D4D</color>
 
     <!--Text colors-->
-    <color name="hiddenTileTextColor">@color/white</color>
-    <color name="clueTileTextColor">@color/white</color>
+    <color name="lightBackgroundText">@color/black</color>
+    <color name="darkBackgroundText">@color/white</color>
 </resources>

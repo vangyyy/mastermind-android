@@ -117,6 +117,13 @@ public class Field {
 		return true;
 	}
 
+	public void clearCurrentRow() {
+		for (int col = 0; col < getColCount(); col++) {
+			balls[getCurrentRow()][col] = null;
+		}
+	}
+
+
 	public void setBall(int colCount, BallColor color) {
 		balls[currentRow][colCount - 1] = new Ball(color);
 	}

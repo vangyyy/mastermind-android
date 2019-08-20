@@ -1,5 +1,6 @@
 package com.vangor.mastermind;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 
 	private Context context;
 	// TODO: Fix, game crashes if not initialized with max sized field
-	private Field field = new Field(10, 6, false);
+	private Field field = new Field(10, 4, false);
 	private int rows = field.getRowCount();
 	private int cols = field.getColCount();
 	private Button[][] buttons = new Button[rows][cols];
@@ -45,8 +46,6 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 		logScreenSize();
 
 		Button btnNewGame = findViewById(R.id.buttonNewGame);
-		Button btnCheck = findViewById(R.id.buttonCheck);
-
 		btnNewGame.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -55,56 +54,68 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 			}
 		});
 
-		btnCheck.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				switch (field.getState()) {
-					case PLAYING:
-						if (field.isRowFilled()) {
-							field.updateGameState();
-							field.generateClue();
-							HashMap clueMap = field.getClueHashMap(field.getClue(), field.getCurrentRow());
-							Toast.makeText(context, "Guessed:\n" +
-									clueMap.get("places") + " place/s\n" +
-									clueMap.get("colors") + " color/s", Toast.LENGTH_SHORT).show();
-							field.nextRow();
-						} else {
-							Toast.makeText(context, R.string.incomplete_row, Toast.LENGTH_SHORT).show();
-						}
-						break;
-					case SOLVED:
-						Toast.makeText(context, R.string.win_msg, Toast.LENGTH_SHORT).show();
-						break;
-					case FAILED:
-						Toast.makeText(context, R.string.lost_msg, Toast.LENGTH_SHORT).show();
-						break;
-				}
-				populateButtons();
-			}
-		});
-
 		populateButtons();
 	}
 
+	public void checkAndRender() {
+		switch (field.getState()) {
+			case PLAYING:
+				if (field.isRowFilled()) {
+					field.updateGameState();
+					field.generateClue();
+					HashMap clueMap = field.getClueHashMap(field.getClue(), field.getCurrentRow());
+					Toast.makeText(context, clueMap.get("places") + " place/s, " +
+							clueMap.get("colors") + " color/s", Toast.LENGTH_SHORT).show();
+					field.nextRow();
+				} else {
+					Toast.makeText(context, R.string.incomplete_row, Toast.LENGTH_SHORT).show();
+				}
+				break;
+			case SOLVED:
+				Toast.makeText(context, R.string.win_msg, Toast.LENGTH_SHORT).show();
+				break;
+			case FAILED:
+				Toast.makeText(context, R.string.lost_msg, Toast.LENGTH_SHORT).show();
+				break;
+		}
+		populateButtons();
+	}
+
+	@SuppressLint("ClickableViewAccessibility")
 	private void populateButtons() {
 		TableLayout table = findViewById(R.id.gameTable);
 		table.removeAllViews();
+
 		for (int row = 0; row < rows; row++) {
-			TableRow tableRow = new TableRow(context);
-			table.addView(tableRow);
+			TableRow ballRow = new TableRow(context);
+			table.addView(ballRow);
+			if (field.getCurrentRow() == row) {
+				ballRow.setOnTouchListener(new OnSwipeTouchListener(context) {
+					@Override
+					public void onSwipeRight() {
+						checkAndRender();
+					}
+
+					@Override
+					public void onSwipeLeft() {
+						field.clearCurrentRow();
+						populateButtons();
+					}
+				});
+			}
 
 			HashMap clueMap = field.getClueHashMap(field.getClue(), row);
 
 			// Create place clue button
 			Button placesClueButton = new Button(context);
-			tableRow.addView(placesClueButton);
+			ballRow.addView(placesClueButton);
 			placesClueButton.setText(
 					getResources().getString(R.string.places_clue_format, clueMap.get("places"))
 			);
 
 			for (int col = 0; col < cols; col++) {
 				Button button = new Button(context);
-				tableRow.addView(button);
+				ballRow.addView(button);
 				buttons[row][col] = button;
 
 				// On button click function
@@ -122,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 
 			// Create color clue button
 			Button colorsClueButton = new Button(context);
-			tableRow.addView(colorsClueButton);
+			ballRow.addView(colorsClueButton);
 			colorsClueButton.setText(
 					getResources().getString(R.string.colors_clue_format, clueMap.get("colors"))
 			);
@@ -154,8 +165,8 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 			placesClueButton.setElevation(3f);
 			colorsClueButton.setElevation(3f);
 
-			placesClueButton.setTextColor(getResources().getColor(R.color.clueTileTextColor));
-			colorsClueButton.setTextColor(getResources().getColor(R.color.clueTileTextColor));
+			placesClueButton.setTextColor(getResources().getColor(R.color.darkBackgroundText));
+			colorsClueButton.setTextColor(getResources().getColor(R.color.darkBackgroundText));
 
 			setMargins(placesClueButton, TILE_MARGIN, 0, TILE_MARGIN, TILE_MARGIN);
 			setMargins(colorsClueButton, TILE_MARGIN, 0, TILE_MARGIN, TILE_MARGIN);
@@ -189,19 +200,16 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 				int ballColorDark = getResources().getColor(R.color.freeTileColor);
 
 				if (row == 0) {
+					// Hidden tile colors
 					if (field.getState() == GameState.PLAYING) {
-						// Hidden tile colors
-						ballColorLight = getResources().getColor(R.color.hiddenTileColor);
-						ballColorDark = getResources().getColor(R.color.hiddenTileColor);
-						button.setTextColor(getResources().getColor(R.color.hiddenTileTextColor));
-						button.setText("?");
+						ballColorLight = getResources().getColor(R.color.colorPrimary);
+						ballColorDark = getResources().getColor(R.color.colorPrimaryDark);
 					} else {
-						// Hidden tile colors
 						ballColorLight = Color.parseColor(ball.getColor().getColorLight());
 						ballColorDark = Color.parseColor(ball.getColor().getColorDark());
-						button.setTextColor(getResources().getColor(R.color.hiddenTileTextColor));
-						button.setText("?");
 					}
+					button.setTextColor(getResources().getColor(R.color.darkBackgroundText));
+					button.setText("?");
 				} else if (ball != null) {
 					// Filled tile colors
 					ballColorLight = Color.parseColor(ball.getColor().getColorLight());
