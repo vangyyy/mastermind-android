@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -21,6 +22,8 @@ public class NewGameDialog extends AppCompatDialogFragment {
 	private SeekBar seekBarCols;
 	private TextView textViewRows;
 	private TextView textViewCols;
+	private CheckBox checkBoxDuplicates;
+
 	private NewGameListener listener;
 
 	@Override
@@ -32,9 +35,10 @@ public class NewGameDialog extends AppCompatDialogFragment {
 		View view = inflater.inflate(R.layout.dialog_layout, null);
 
 		seekBarRows = view.findViewById(R.id.seekBarRows);
-		seekBarCols = view.findViewById(R.id.seekBarCols);
+		seekBarCols = view.findViewById(R.id.seekBarColumns);
 		textViewRows = view.findViewById(R.id.textViewRows);
-		textViewCols = view.findViewById(R.id.textViewCols);
+		textViewCols = view.findViewById(R.id.textViewColumns);
+		checkBoxDuplicates = view.findViewById(R.id.duplicatesCheckBox);
 
 		//TODO: Retain value instead of fixed size
 		String rowsString = getResources().getString(R.string.rows, 8);
@@ -93,7 +97,8 @@ public class NewGameDialog extends AppCompatDialogFragment {
 					public void onClick(DialogInterface dialogInterface, int i) {
 						int rows = seekBarRows.getProgress();
 						int cols = seekBarCols.getProgress();
-						listener.newGame(rows, cols);
+						boolean duplicates = checkBoxDuplicates.isChecked();
+						listener.newGame(rows, cols, duplicates);
 					}
 				});
 

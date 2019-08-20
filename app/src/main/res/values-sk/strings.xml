@@ -19,4 +19,5 @@
     <string name="yes">Áno</string>
     <string name="no">Nie</string>
     <string name="exit_prompt_title">Potvrdiť ukončenie</string>
+    <string name="duplicate_colors">Opakovnie farieb</string>
 </resources>

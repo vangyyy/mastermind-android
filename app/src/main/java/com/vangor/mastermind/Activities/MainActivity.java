@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 		});
 
 		context = getApplicationContext();
-		newGame(8, 4);
+		newGame(8, 4, false);
 	}
 
 	@SuppressLint("ClickableViewAccessibility")
@@ -169,10 +169,10 @@ public class MainActivity extends AppCompatActivity implements NewGameListener {
 	}
 
 	@Override
-	public void newGame(int rows, int columns) {
+	public void newGame(int rows, int columns, boolean duplicates) {
 		this.rows = rows;
 		this.columns = columns;
-		field = new Field(this.rows++, this.columns, false);
+		field = new Field(this.rows++, this.columns, duplicates);
 		populateField();
 	}
 

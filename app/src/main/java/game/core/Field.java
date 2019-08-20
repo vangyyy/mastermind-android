@@ -1,5 +1,7 @@
 package game.core;
 
+import android.util.Log;
+
 import java.util.HashMap;
 
 public class Field {
@@ -42,6 +44,7 @@ public class Field {
 	private void generateRandomRow() {
 		for (int col = 0; col < colCount; col++) {
 			balls[0][col] = new Ball(BallColor.getRandom());
+			Log.d("=== DUPLICATES ===", "Col " + col + ": " + balls[0][col].getColor());
 		}
 	}
 
@@ -50,10 +53,12 @@ public class Field {
 	 */
 	private void generateUniqueRow() {
 		balls[0][0] = new Ball(BallColor.getRandom());
+		Log.d("=== UNIQUE ===", "Col " + 0 + ": " + balls[0][0].getColor());
 		for (int col = 1; col < colCount; col++) {
 			do {
 				balls[0][col] = new Ball(BallColor.getRandom());
 			} while (!checkForUniqueColors(col));
+			Log.d("=== UNIQUE ===", "Col " + col + ": " + balls[0][col].getColor());
 		}
 	}
 
