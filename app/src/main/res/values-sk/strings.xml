@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Mastermind</string>
+    <string name="new_game">Nová hra</string>
+    <string name="check">Overiť</string>
+    <string name="rows">Riadky: %d</string>
+    <string name="columns">Stĺpce: %d</string>
+    <string name="cancel">Zatvoriť</string>
+    <string name="start">Štart</string>
+
+    <string name="places">Miest</string>
+    <string name="colors">Farieb</string>
+    <string name="places_clue_format">%sM</string>
+    <string name="colors_clue_format">%sF</string>
+
+    <string name="incomplete_row">Riadok nie je kompletný!</string>
+    <string name="win_msg">Vyhral si!</string>
+    <string name="lost_msg">Prehral si!</string>
+    <string name="exit_prompt_message">Naozaj chcete chcete zatvoriť aplikáciu?</string>
+    <string name="yes">Áno</string>
+    <string name="no">Nie</string>
+    <string name="exit_prompt_title">Potvrdiť ukončenie</string>
+    <string name="duplicate_colors">Opakovnie farieb</string>
+</resources>

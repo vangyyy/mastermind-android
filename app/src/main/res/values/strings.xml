@@ -1,18 +1,31 @@
 <resources>
     <string name="app_name">Mastermind</string>
+
+    <!--Buttons-->
     <string name="new_game">New Game</string>
     <string name="check">Check</string>
 
-    <string-array name="rows_array">
-        <item>4</item>
-        <item>6</item>
-        <item>8</item>
-        <item>10</item>
-    </string-array>
+    <!--New game dialog-->
+    <string name="rows">Rows: %d</string>
+    <string name="columns">Columns: %d</string>
+    <string name="duplicate_colors">Duplicate colors</string>
+    <string name="cancel">Cancel</string>
+    <string name="start">Start</string>
 
-    <string-array name="cols_array">
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-    </string-array>
+    <!--Game-->
+    <string name="places">Places</string>
+    <string name="colors">Colors</string>
+    <string name="places_clue_format">%sP</string>
+    <string name="colors_clue_format">%sC</string>
+
+    <!--Info-->
+    <string name="incomplete_row">Row is not complete!</string>
+    <string name="win_msg">You WON!</string>
+    <string name="lost_msg">You LOST!</string>
+
+    <!--Exit prompt-->
+    <string name="exit_prompt_title">Confirm exit</string>
+    <string name="exit_prompt_message">Do you really want to exit?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
 </resources>
