@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://pi-hole.net"><img src="resources/logo-day.png" height="255" height="150" alt="Mastermind"></a><br/>
+<img src="resources/logo-day.png" height="255" height="150" alt="Mastermind"><br/>
 <b>Code-breaking game for Android</b><br/>
 <a href="https://f-droid.org"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80" style="display: block; margin-left: auto; margin-right: auto; width: 20%; height: auto;"></a><br/>
 </p>
